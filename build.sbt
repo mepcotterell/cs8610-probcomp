@@ -1,4 +1,4 @@
-name := "cs8470-ads"
+name := "cs8610-probcomp"
 
 version := "1.0"
 
