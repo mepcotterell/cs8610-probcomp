@@ -11,15 +11,16 @@ class DisjointSets (n: Int) {
   // make sure we're using mutable sets
   import scala.collection.mutable.Set
 
-  // create an array of mutable sets
-  val sets = Array.ofDim[Set[Int]](n)
+  // create a parallel array of mutable sets
+  val sets = Array.ofDim[Set[Int]](n).par
   
   // create the sets
   for (i <- 0 until sets.length) sets(i) = Set(i)
 
   /**
    * Returns the indices in the set array of the sets that contain x.
-   *
+   * Use a view to make the zip and filter fast.
+   * 
    * @param an element to find
    * @return an array of indices corresponding to the sets containing x
    */
@@ -58,8 +59,8 @@ class DisjointSetGraph (n: Int) extends DisjointSets (n) {
    */
   def addEdge (x: Int, y: Int): Unit = {
     union(x, y)
-    println("add (%d, %d) => %s".format(x, y, sets.deep))
-    println("number of connected components = %d".format(numComponents))
+  //  println("add (%d, %d) => %s".format(x, y, sets.deep))
+  //  println("number of connected components = %d".format(numComponents))
   } // addEdge
 
   def numComponents: Int = sets.toSet.size
@@ -73,7 +74,7 @@ object Midterm extends App {
 
   val dsg = new DisjointSetGraph(10)
 
-  println("initial => %s".format(dsg.sets.deep))
+//  println("initial => %s".format(dsg.sets.deep))
 
   dsg.addEdge(1, 3)
   dsg.addEdge(4, 6)
@@ -82,6 +83,8 @@ object Midterm extends App {
   dsg.addEdge(0, 1)
   dsg.addEdge(4, 5)
   dsg.addEdge(1, 2)
+
+  println("number of connected components = %d".format(dsg.numComponents))
 
 } // Midterm
 
