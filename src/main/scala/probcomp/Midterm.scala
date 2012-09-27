@@ -47,6 +47,9 @@ class DisjointSets (n: Int) {
  */
 class DisjointSetGraph (n: Int) extends DisjointSets (n) {
 
+  // make sure we're using mutable sets
+  import scala.collection.mutable.Set
+
   /**
    * Adds an edge to the graph.
    *
@@ -56,7 +59,10 @@ class DisjointSetGraph (n: Int) extends DisjointSets (n) {
   def addEdge (x: Int, y: Int): Unit = {
     union(x, y)
     println("add (%d, %d) => %s".format(x, y, sets.deep))
+    println("number of connected components = %d".format(numComponents))
   } // addEdge
+
+  def numComponents: Int = sets.toSet.size
 
 } // DisjointSetGraph
 
