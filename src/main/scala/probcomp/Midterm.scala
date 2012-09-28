@@ -1,5 +1,6 @@
 package probcomp
 
+import probcomp.random.Implicits._
 import probcomp.random.Random
 import probcomp.stat.Statistic
 
@@ -29,7 +30,7 @@ object Midterm extends App {
       g = new DisjointSetsGraph(n)
 
       breakable {
-	for (edge <- (0 until n).combinations(2).toList) {
+	for (edge <- (0 until n shuffled).combinations(2)) {
 	  if (r.gen < p) {
 	    g.addEdge(edge(0), edge(1))
 	    counter += 1
@@ -68,7 +69,7 @@ object Midterm extends App {
       g = new DisjointSetsGraph(n)
 
       breakable {
-	for (edge <- (0 until n).combinations(2).toList) {
+	for (edge <- (0 until n).combinations(2)) {
 	  if (r.gen < p) {
 	    g.addEdge(edge(0), edge(1))
 	    counter += 1
