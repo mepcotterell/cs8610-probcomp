@@ -46,8 +46,8 @@ class Statistic () {
   def rms      = sqrt(ms)
 
   def printSummary: Unit = {
-    println("| %7s | %9s | %9s | %9s | %9s |".format("samples", "min", "max", "mean", "stdDev"))
-    println("| %7d | %9.3f | %9.3f | %9.3f | %9.3f |".format(n, min, max, mean, stddev))
+    println("| %7s | %10s | %10s | %10s | %10s |".format("samples", "min", "max", "mean", "stdDev"))
+    println("| %7d | %10.3f | %10.3f | %10.3f | %10.3f |".format(n, min, max, mean, stddev))
   } // printSummary
 
 } // Statistic
