@@ -25,4 +25,14 @@ class DisjointSetsGraph (n: Int) extends DisjointSets (n) {
    */
   def numComponents: Int = sets.toSet.size
 
+  /**
+   * Returns whether or not the graph is connected
+   */
+  def connected: Boolean = (numComponents == 1)
+
+  /**
+   * Returns the number of isolated vertices
+   */
+  def numIsolated: Int = sets.view.count(set => set.size == 1)
+
 } // DisjointSetsGraph

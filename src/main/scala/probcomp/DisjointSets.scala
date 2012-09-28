@@ -9,7 +9,7 @@ package probcomp
 class DisjointSets (n: Int) {
 
   // make sure we're using mutable sets
-  import scala.collection.mutable.Set
+  import scala.collection.mutable.{ HashSet, Set }
 
   // create a parallel set of mutable sets
   val sets = Set.empty[Set[Int]]
