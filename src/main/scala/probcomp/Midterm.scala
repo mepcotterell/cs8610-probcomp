@@ -11,6 +11,7 @@ object Midterm extends App {
 
   import scala.util.control.Breaks._
 
+  println
   println("EXERCISE 5.20 (b)")
 
   // 100(100)1000
@@ -50,6 +51,7 @@ object Midterm extends App {
 
   } // for 
 
+  println
   println("EXERCISE 5.20 (a)")
 
   // 100(100)1000
