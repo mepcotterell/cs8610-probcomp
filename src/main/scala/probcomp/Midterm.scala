@@ -69,7 +69,7 @@ object Midterm extends App {
       g = new DisjointSetsGraph(n)
 
       breakable {
-	for (edge <- (0 until n).combinations(2)) {
+	for (edge <- (0 until n shuffled).combinations(2)) {
 	  if (r.gen < p) {
 	    g.addEdge(edge(0), edge(1))
 	    counter += 1
