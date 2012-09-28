@@ -9,14 +9,14 @@ package probcomp
 class DisjointSets (n: Int) {
 
   // make sure we're using mutable sets
-  import scala.collection.mutable.{ HashSet, Set }
+  import scala.collection.mutable.{ BitSet, Set }
 
   // create a parallel set of mutable sets
-  val sets = Set.empty[Set[Int]]
+  val sets = Set.empty[BitSet]
 
   // create the initial disjoint sets
   for (i <- 0 until n) {
-    sets add Set(i)
+    sets add BitSet(i)
   } // for
  
   /**
@@ -25,9 +25,9 @@ class DisjointSets (n: Int) {
    * @param an element to find
    * @return an array of indices corresponding to the sets containing x
    */
-  def find (x: Int): Set[Int] = {
-    var set: Set[Int] = null
-    sets.view.filter(set => set.exists(_ == x)).foreach(s => set = s)
+  def find (x: Int): BitSet = {
+    var set: BitSet = null
+    sets.view.filter(set => set.contains(x)).foreach(s => set = s)
     set
   } // find
 
