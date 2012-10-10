@@ -1,15 +1,24 @@
 package probcomp
 
+import scala.util.control.Breaks._
+
 import probcomp.random.Implicits._
 import probcomp.random.Random
 import probcomp.stat.Statistic
 
 /**
- * Code for the midterm assignment
+ * Code for the midterm assignment.
+ *
+ * @author Michael E. Cotterell <mepcotterell@gmail.com>
  */
 object Midterm extends App {
 
-  import scala.util.control.Breaks._
+  // time a function in ns
+  def time (f: => Unit): Double = {
+    val begin = System.nanoTime
+    f
+    System.nanoTime - begin
+  } // time
 
   println
   println("EXERCISE 5.20 (b)")
@@ -22,32 +31,52 @@ object Midterm extends App {
     val p    = 0.5
 
     var g: DisjointSetsGraph = null
+    
+    // all possible edges for a graph of size n
 
+    println("n = %d".format(n))
+    print(" - generating all possible edges for %d vertices... ".format(n))
+    val allEdges = (0 until n).combinations(2).toIterable
+    println("finished")
+
+    print(" - generating random iterators... ")
+    val iters = Array.fill(100)(r.shuffle(allEdges))
+    println("finished")
+
+    print(" - sampling... ");
     // need to take 100 samples
-    for (i <- 0 until 100) {
+    val t = time { 
 
-      var counter = 0
+      for (i <- 1 to 100) {
+
+        var counter = 0
       
-      g = new DisjointSetsGraph(n)
+        g = new DisjointSetsGraph(n)
 
-      breakable {
-	for (edge <- (0 until n shuffled).combinations(2)) {
-	  if (r.gen < p) {
-	    g.addEdge(edge(0), edge(1))
-	    counter += 1
-	  } // if
-          if (g.numIsolated == 0) break
-	} // for
-      } // breakable
+        breakable {
+	  for (edge <- iters(i-1)) {
+	    if (r.gen < p) {
+	      g.addEdge(edge(0), edge(1))
+	      counter += 1
+	    } // if
+            if (g.numIsolated == 0) break
+          } // for
+        } // breakable
       
-      // add our sample to the statistic
-      stat.sample(counter)
+        // add our sample to the statistic
+        stat.sample(counter)
 
-    } // for
+	if (i % 10 == 0) print("%d ".format(i))
+
+      } // for
+
+    } // time
+    println("finished")
+    println(" - sampling stats %.3f ns, %.3f us, %.6f ms, %.9f s".format(t, t / 1000, t / 1000000, t / 1000000000))
 
     println
-    println("n = %d".format(n))
     stat.printSummary
+    println
 
   } // for 
 
@@ -62,32 +91,52 @@ object Midterm extends App {
     val p    = 0.5
 
     var g: DisjointSetsGraph = null
+    
+    // all possible edges for a graph of size n
 
+    println("n = %d".format(n))
+    print(" - generating all possible edges for %d vertices... ".format(n))
+    val allEdges = (0 until n).combinations(2).toIterable
+    println("finished")
+
+    print(" - generating random iterators... ")
+    val iters = Array.fill(100)(r.shuffle(allEdges))
+    println("finished")
+
+    print(" - sampling... ");
     // need to take 100 samples
-    for (i <- 0 until 100) {
+    val t = time {
 
-      var counter = 0
+      for (i <- 1 to 100) {
+
+        var counter = 0
       
-      g = new DisjointSetsGraph(n)
+        g = new DisjointSetsGraph(n)
 
-      breakable {
-	for (edge <- (0 until n shuffled).combinations(2)) {
-	  if (r.gen < p) {
-	    g.addEdge(edge(0), edge(1))
-	    counter += 1
-	  } // if
-          if (g.connected) break
-	} // for
-      } // breakable
+        breakable {
+	  for (edge <- iters(i-1)) {
+	    if (r.gen < p) {
+	      g.addEdge(edge(0), edge(1))
+	      counter += 1
+	    } // if
+            if (g.connected) break
+	  } // for
+        } // breakable
       
-      // add our sample to the statistic
-      stat.sample(counter)
+        // add our sample to the statistic
+        stat.sample(counter)
 
-    } // for
+        if (i % 10 == 0) print("%d ".format(i))
+
+      } // for
+
+    } // time
+    println("finished")
+    println(" - sampling stats %.3f ns, %.3f us, %.6f ms, %.9f s".format(t, t / 1000, t / 1000000, t / 1000000000))
 
     println
-    println("n = %d".format(n))
     stat.printSummary
+    println
 
   } // for 
 
