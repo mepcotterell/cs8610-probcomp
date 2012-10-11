@@ -1,5 +1,6 @@
 package probcomp
 
+import scala.collection.parallel.mutable.ParArray
 import scala.util.control.Breaks._
 
 import probcomp.random.Implicits._
@@ -30,32 +31,36 @@ object Midterm extends App {
     val r    = new Random()
     val p    = 0.5
 
-    var g: DisjointSetsGraph = null
-    
     // all possible edges for a graph of size n
 
     println("n = %d".format(n))
+
+    print(" - running garbage collection... ")
+    System.gc
+    println("finished")
+
     print(" - generating all possible edges for %d vertices... ".format(n))
     val allEdges = (0 until n).combinations(2).toIterable
     println("finished")
 
     print(" - generating random iterators... ")
-    val iters = Array.fill(100)(r.shuffle(allEdges))
+    val iters = ParArray.fill(100)(r.shuffle(allEdges).toArray)
     println("finished")
 
     print(" - sampling... ");
     // need to take 100 samples
     val t = time { 
 
-      for (i <- 1 to 100) {
+      for (i <- 1 to 100 par) {
 
         var counter = 0
-      
-        g = new DisjointSetsGraph(n)
+        val g = new DisjointSetsGraph(n)
+	val rand = new Random()
 
         breakable {
-	  for (edge <- iters(i-1)) {
-	    if (r.gen < p) {
+	  for (j <- 0 until iters(i-1).length) {
+	    val edge = iters(i-1)(j)
+	    if (rand.gen < p) {
 	      g.addEdge(edge(0), edge(1))
 	      counter += 1
 	    } // if
@@ -64,9 +69,9 @@ object Midterm extends App {
         } // breakable
       
         // add our sample to the statistic
-        stat.sample(counter)
+        synchronized { stat.sample(counter) }
 
-	if (i % 10 == 0) print("%d ".format(i))
+	print(".")
 
       } // for
 
@@ -90,32 +95,36 @@ object Midterm extends App {
     val r    = new Random()
     val p    = 0.5
 
-    var g: DisjointSetsGraph = null
-    
     // all possible edges for a graph of size n
 
     println("n = %d".format(n))
+
+    print(" - running garbage collection... ")
+    System.gc
+    println("finished")
+
     print(" - generating all possible edges for %d vertices... ".format(n))
     val allEdges = (0 until n).combinations(2).toIterable
     println("finished")
 
     print(" - generating random iterators... ")
-    val iters = Array.fill(100)(r.shuffle(allEdges))
+    val iters = ParArray.fill(100)(r.shuffle(allEdges).toArray)
     println("finished")
 
     print(" - sampling... ");
     // need to take 100 samples
     val t = time {
 
-      for (i <- 1 to 100) {
+      for (i <- 1 to 100 par) {
 
         var counter = 0
-      
-        g = new DisjointSetsGraph(n)
+        val g = new DisjointSetsGraph(n)
+	val rand = new Random()
 
         breakable {
-	  for (edge <- iters(i-1)) {
-	    if (r.gen < p) {
+	  for (j <- 0 until iters(i-1).length) {
+	    val edge = iters(i-1)(j)
+	    if (rand.gen < p) {
 	      g.addEdge(edge(0), edge(1))
 	      counter += 1
 	    } // if
@@ -124,9 +133,9 @@ object Midterm extends App {
         } // breakable
       
         // add our sample to the statistic
-        stat.sample(counter)
+        synchronized { stat.sample(counter) }
 
-        if (i % 10 == 0) print("%d ".format(i))
+	print(".")
 
       } // for
 
