@@ -1,5 +1,7 @@
 package probcomp
 
+import scala.util.control.Breaks._
+
 /**
  * A disjoint sets data structure.
  *
@@ -12,11 +14,11 @@ class DisjointSets (n: Int) {
   import scala.collection.mutable.{ BitSet, Set }
 
   // create a parallel set of mutable sets
-  val sets = Set.empty[BitSet]
+  val sets = Set.empty[Set[Int]]
 
   // create the initial disjoint sets
   for (i <- 0 until n) {
-    sets add BitSet(i)
+    sets add Set(i)
   } // for
  
   /**
@@ -25,9 +27,14 @@ class DisjointSets (n: Int) {
    * @param an element to find
    * @return an array of indices corresponding to the sets containing x
    */
-  def find (x: Int): BitSet = {
-    var set: BitSet = null
-    sets.view.filter(set => set.contains(x)).foreach(s => set = s)
+  def find (x: Int): Set[Int] = {
+    var set: Set[Int] = null
+    breakable {
+      for (s <- sets.filter(set => set.contains(x))) {
+	set = s
+	break
+      } // for
+    } // breakable
     set
   } // find
 
@@ -40,19 +47,19 @@ class DisjointSets (n: Int) {
    */
   def union (x: Int, y: Int): Unit = {
 
+//    println("[dbg-ds] union of sets with %d and %d".format(x, y))
+
     // get each set
     val xSet = find(x)
     val ySet = find(y)
 
+//    println("[dbg-ds] %d set = %s".format(x, xSet))
+//    println("[dbg-ds] %d set = %s".format(y, ySet))
+
     // if they're not equal, merge the smaller set into the larger set
-    if (xSet != ySet){
-      if (xSet.size > ySet.size) {
-	xSet ++= ySet
-	sets remove ySet
-      } else {
-	ySet ++= xSet
-	sets remove xSet
-      } // if
+    if (!xSet.equals(ySet)){
+      xSet ++= ySet
+      sets remove ySet
     } // if
 
   } // union
